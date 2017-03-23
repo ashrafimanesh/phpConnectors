@@ -14,10 +14,10 @@ class CurlConnector extends AbstractConnectors
 	}
 
 	public function run($method=null,$params=[]){
-        curl_setopt($this->connectorInstance, CURLOPT_POST, 1);
-        curl_setopt($this->connectorInstance, CURLOPT_POSTFIELDS, $params);
-        $exec=curl_exec ($this->connectorInstance);
-        curl_close ($this->connectorInstance);
+        curl_setopt($this->getConnectorInstance(), CURLOPT_POST, 1);
+        curl_setopt($this->getConnectorInstance(), CURLOPT_POSTFIELDS, $params);
+        $exec=curl_exec ($this->getConnectorInstance());
+        curl_close ($this->getConnectorInstance());
         return $exec;
 	}
 

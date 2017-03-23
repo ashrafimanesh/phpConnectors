@@ -42,6 +42,7 @@ abstract class AbstractConnectors{
 	public function setUrl($url)
 	{
 		$this->url = $url;
+		return $this;
 	}
 
 	/**
@@ -58,6 +59,7 @@ abstract class AbstractConnectors{
 	public function setProxyDomain($proxyDomain)
 	{
 		$this->proxyDomain = $proxyDomain;
+		return $this;
 	}
 
 	/**
@@ -74,6 +76,7 @@ abstract class AbstractConnectors{
 	public function setProxyPort($proxyPort)
 	{
 		$this->proxyPort = $proxyPort;
+		return $this;
 	}
 
 	/**
@@ -90,6 +93,7 @@ abstract class AbstractConnectors{
 	public function setParams($params)
 	{
 		$this->params = $params;
+		return $this;
 	}
 
 
@@ -99,6 +103,7 @@ abstract class AbstractConnectors{
 	public function setConnectorInstance($connectorInstance)
 	{
 		$this->connectorInstance = $connectorInstance;
+		return $this;
 	}
 
 	public function getConnectorInstance(){

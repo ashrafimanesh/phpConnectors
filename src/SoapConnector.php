@@ -11,6 +11,6 @@ class SoapConnector extends AbstractConnectors{
 	}
 
 	public function run($method=null,$params=[]){
-
+		return call_user_func_array([$this->getConnectorInstance(),$method],$params);
 	}
 }
