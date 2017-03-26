@@ -5,27 +5,85 @@ namespace Ashrafi\PhpConnectors;
 abstract class AbstractConnectors{
 	const CurlConnector="Curl";
 	const SoapConnector="Soap";
+	const ProxyTypeUrl='urlProxy';
+	const ProxyTypeHttp='proxy';
 
-	protected $url,$connectorInstance,$type,$proxyDomain="",$proxyPort=3280,$params=[];
+	protected $url,$connectorInstance,$type,$proxyDomain="",$proxyPort=3128,$proxyType=self::ProxyTypeHttp,$params=[];
 
-	protected abstract function _getConnectorInstance($url);
+	protected $real_url=null;
 
-	public abstract function run($method=null,$params=[]);
-
-	public static function getInstance($url,$proxyDomain=null,$proxyPort=null){
-		$connectorClass=get_called_class();
-		if(!class_exists($connectorClass)){
+	/**
+	 * @param $url
+	 * @param $proxyDomain
+	 * @param $proxyPort
+	 * @param $proxyType
+	 * @param $connectorClass
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public static function getConnector($url, $proxyDomain, $proxyPort, $proxyType, $connectorClass)
+	{
+		if (!class_exists($connectorClass)) {
 			throw new \Exception("method does not exist related run method", 1);
 		}
-		$connector=new $connectorClass($url,$proxyDomain,$proxyPort);
+		$real_url = $url;
+
+		if ($proxyDomain && $proxyType == self::ProxyTypeUrl) {
+			$url = $proxyDomain . ($proxyPort ? $proxyPort : '');
+			$connectorClass = CurlConnector::class;
+		}
+
+		$connector = new $connectorClass($url, $proxyDomain, $proxyPort, $proxyType);
+		$connector->setRealUrl($real_url);
+
 		$connector->setConnectorInstance($connector->_getConnectorInstance($url));
 		return $connector;
 	}
 
-	protected final function __construct($url,$proxyDomain=null,$proxyPort=3280){
+	protected abstract function _getConnectorInstance($url);
 
-		$this->setProxyDomain($proxyDomain);
-		$this->setProxyPort($proxyPort);
+	protected abstract function _run($method=null,$params=[]);
+
+	/**
+	 * @param $url
+	 * @param null $proxyDomain
+	 * @param null $proxyPort
+	 * @param string $proxyType
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public final static function getInstance($url,$proxyDomain=null,$proxyPort=null,$proxyType=self::ProxyTypeHttp){
+		$connectorClass=get_called_class();
+		$connector = self::getConnector($url, $proxyDomain, $proxyPort, $proxyType, $connectorClass);
+		return $connector;
+	}
+
+	/**
+	 * @param null $method
+	 * @param array $params
+	 * @return mixed
+     */
+	public function run($method=null,$params=[]){
+		$proxyDomain=$this->getProxyDomain();
+		$proxyType=$this->getProxyType();
+
+		if($proxyDomain && $proxyType==self::ProxyTypeUrl){
+			$_params['real_url']=$this->real_url;
+			$_params['request']=$params;
+			$_params['method']=$method;
+			$params=$_params;
+		}
+
+		$result=$this->_run($method,$params);
+		if($proxyDomain && $proxyType==self::ProxyTypeUrl){
+			$result=json_decode($result);
+		}
+		return $result;
+	}
+
+	protected final function __construct($url,$proxyDomain=null,$proxyPort=3128,$proxyType=self::ProxyTypeHttp){
+
+		$this->setUrl($url)->setProxyDomain($proxyDomain)->setProxyPort($proxyPort)->setProxyType($proxyType);
 	}
 
 	/**
@@ -80,6 +138,43 @@ abstract class AbstractConnectors{
 	}
 
 	/**
+	 * @return mixed
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
+	 * @param mixed $type
+	 * @return AbstractConnectors
+	 */
+	public function setType($type)
+	{
+		$this->type = $type;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getProxyType()
+	{
+		return $this->proxyType;
+	}
+
+	/**
+	 * @param string $proxyType
+	 * @return AbstractConnectors
+	 */
+	public function setProxyType($proxyType)
+	{
+		$this->proxyType = $proxyType;
+		return $this;
+	}
+
+
+	/**
 	 * @return array
 	 */
 	public function getParams()
@@ -109,5 +204,24 @@ abstract class AbstractConnectors{
 	public function getConnectorInstance(){
 		return $this->connectorInstance;
 	}
+
+	/**
+	 * @return null
+	 */
+	public function getRealUrl()
+	{
+		return $this->real_url;
+	}
+
+	/**
+	 * @param null $real_url
+	 * @return AbstractConnectors
+	 */
+	public function setRealUrl($real_url)
+	{
+		$this->real_url = $real_url;
+		return $this;
+	}
+
 
 }

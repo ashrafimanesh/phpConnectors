@@ -10,7 +10,7 @@ class SoapConnector extends AbstractConnectors{
         return new \SoapClient($url, ['stream_context' => $context,'trace' => true, 'exceptions' => true]);
 	}
 
-	public function run($method=null,$params=[]){
+	protected function _run($method=null,$params=[]){
 		return call_user_func_array([$this->getConnectorInstance(),$method],$params);
 	}
 }
