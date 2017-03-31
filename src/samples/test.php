@@ -1,16 +1,15 @@
 <?php
 
 require_once __DIR__.'/../../vendor/autoload.php';
-
-$connector=\Ashrafi\PhpConnectors\SoapConnector::getInstance(
-    'https://sep.shaparak.ir/Payments/InitPayment.asmx?WSDL'
+$wsdl_url='https://sep.shaparak.ir/Payments/InitPayment.asmx?WSDL';
+$connector=\Ashrafi\PhpConnectors\ConnectorFactory::create(\Ashrafi\PhpConnectors\SoapConnector::class
+    ,$wsdl_url
     ,'http://ashrafimanesh.ir/proxy/soap.php'
     ,''
-    ,\Ashrafi\PhpConnectors\AbstractConnectors::ProxyTypeUrl
-);
+    ,\Ashrafi\PhpConnectors\AbstractConnectors::ProxyTypeUrl);
 $amount=1000;
 $request = [
-    'TermID' => '10560528',
+    'TermID' => '12344',
     'TotalAmount' => ($amount),
     'ResNum' => 'a'.uniqid(),
 ];

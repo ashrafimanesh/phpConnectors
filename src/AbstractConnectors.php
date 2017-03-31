@@ -18,7 +18,7 @@ abstract class AbstractConnectors{
 	 * @param $proxyPort
 	 * @param $proxyType
 	 * @param $connectorClass
-	 * @return mixed
+	 * @return AbstractConnectors
 	 * @throws \Exception
 	 */
 	public static function getConnector($url, $proxyDomain, $proxyPort, $proxyType, $connectorClass)
@@ -49,7 +49,7 @@ abstract class AbstractConnectors{
 	 * @param null $proxyDomain
 	 * @param null $proxyPort
 	 * @param string $proxyType
-	 * @return mixed
+	 * @return AbstractConnectors
 	 * @throws \Exception
 	 */
 	public final static function getInstance($url,$proxyDomain=null,$proxyPort=null,$proxyType=self::ProxyTypeHttp){
