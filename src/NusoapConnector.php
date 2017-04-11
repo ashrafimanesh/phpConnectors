@@ -20,7 +20,7 @@ class NusoapConnector extends AbstractConnectors
 
     protected function _run($method = null, $params = [])
     {
-        return call_user_func_array([$this->getConnectorInstance(),$method],$params);
+        return call_user_func_array([$this->getConnectorInstance(),'call'],array_merge([$method],$params));
     }
 
 }

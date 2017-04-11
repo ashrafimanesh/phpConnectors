@@ -12,15 +12,14 @@ namespace Ashrafi\PhpConnectors;
 class ConnectorFactory
 {
     /**
-     * @param $connectorClass AbstractConnector class name
+     * @param $connectorClass
      * @param $url
-     * @param $proxyDomain
-     * @param $proxyPort
-     * @param $proxyType
+     * @param string $proxyDomain
+     * @param string $proxyPort
+     * @param string $proxyType
      * @return AbstractConnectors
-     * @throws \Exception
      */
-    public static function create($connectorClass,$url, $proxyDomain, $proxyPort, $proxyType){
+    public static function create($connectorClass,$url, $proxyDomain='', $proxyPort='', $proxyType=''){
         $connector = AbstractConnectors::getConnector($url, $proxyDomain, $proxyPort, $proxyType, $connectorClass);
         return $connector;
     }
