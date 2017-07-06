@@ -42,7 +42,7 @@ abstract class AbstractConnectors{
 
 	protected abstract function _getConnectorInstance($url);
 
-	protected abstract function _run($method=null,$params=[]);
+	protected abstract function _run($method=null,$params=[],$options=[]);
 
 	/**
 	 * @param $url
@@ -63,7 +63,7 @@ abstract class AbstractConnectors{
 	 * @param array $params
 	 * @return mixed
      */
-	public function run($method=null,$params=[]){
+	public function run($method=null,$params=[],$options=[]){
 		$proxyDomain=$this->getProxyDomain();
 		$proxyType=$this->getProxyType();
 
@@ -74,7 +74,7 @@ abstract class AbstractConnectors{
 			$params=$_params;
 		}
 
-		$result=$this->_run($method,$params);
+		$result=$this->_run($method,$params,$options);
 		if($proxyDomain && $proxyType==self::ProxyTypeUrl){
 			$result=json_decode($result);
 		}
